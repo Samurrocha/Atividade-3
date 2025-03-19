@@ -1,35 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useRef } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TextInput, Animated } from 'react-native';
 
 export default function App() {
 
+  const scrollRef = useRef(null);
+  const sanFrancisco = useRef(null)
+  const quebec = useRef(null)
+  const victoria = useRef(null)
+  const paris = useRef(null)
+  const toquio = useRef(null)
+  const rioDeJaneiro = useRef(null)
+
   const[SearchPlace, setSearchPlace] = useState("")
 
-
-  const scrollViewRef = useRef<ScrollView>(null); // Definindo a referência do ScrollView com o tipo correto
-
-  const handleSearch = () => {
-    const placeToFind = SearchPlace.trim().toLowerCase();
-    const places = ["paris", "tokyo", "nova york", "londres"]; // Lista de lugares que você deseja pesquisar
-
-    // Verifica se o valor inserido corresponde a um lugar da lista
-    if (places.includes(placeToFind)) {
-      console.log('Encontrado:', placeToFind);
-
-      // Caso a palavra seja encontrada, rola até a posição do lugar
-      const index = places.indexOf(placeToFind);
-      const scrollToY = index * 100; // Ajuste para rolar até o local correto
-
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({ y: scrollToY, animated: true });
-      }
-    } else {
-      console.log('Lugar não encontrado');
-    }
-  };
+  
+ 
   return (
-    <ScrollView>
+    <ScrollView ref={scrollRef}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>
@@ -42,13 +30,15 @@ export default function App() {
             placeholder='alohaa'
             value={SearchPlace}
             onChangeText={setSearchPlace}
+            onSubmitEditing={() => scrollToPlace(10000)}  // Aciona a função de pesquisa ao pressionar Enter
+            returnKeyType="search"  // Configura o botão de "Enter" para "search"
           />
 
 
 
         </View>
 
-        <View style={styles.place}>
+        <View ref={sanFrancisco} style={styles.place}>
           <Text style={styles.placeTitle}>San Francisco</Text>
           <Image
             style={styles.places}
@@ -67,7 +57,7 @@ export default function App() {
           </Text>
         </View>
 
-        <View style={styles.place}>
+        <View ref={quebec} style={styles.place}>
           <Text style={styles.placeTitle}>Quebec</Text>
           <Image
             style={styles.places}
@@ -82,7 +72,7 @@ export default function App() {
           </Text>
         </View>
 
-        <View style={styles.place}>
+        <View ref={victoria} style={styles.place}>
           <Text style={styles.placeTitle}>Victoria</Text>
           <Image
             style={styles.places}
@@ -97,7 +87,7 @@ export default function App() {
           </Text>
         </View>
 
-        <View style={styles.place}>
+        <View ref={paris} style={styles.place}>
           <Text style={styles.placeTitle}>Paris</Text>
           <Image
             style={styles.places}
@@ -113,7 +103,7 @@ export default function App() {
           </Text>
         </View>
 
-        <View style={styles.place}>
+        <View ref={toquio} style={styles.place}>
           <Text style={styles.placeTitle}>Toquio</Text>
           <Image
             style={styles.places}
@@ -128,7 +118,7 @@ export default function App() {
           </Text>
         </View>
 
-        <View style={styles.place}>
+        <View ref={rioDeJaneiro} style={styles.place}>
           <Text style={styles.placeTitle}>Rio de Janeiro</Text>
           <Image
             style={styles.places}
