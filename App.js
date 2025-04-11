@@ -1,263 +1,136 @@
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, ScrollView, Image, Pressable } from 'react-native';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, Button, Image, StyleSheet, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import Slider from '@react-native-community/slider';
+
+const placesData = [
+  {
+    image: require('./assets/san_francisco.png'),
+    preview: 'São Francisco é uma cidade vibrante e icônica localizada no norte da Califórnia...',
+    full: `São Francisco é uma cidade vibrante e icônica localizada no norte da Califórnia, famosa por sua rica história, arquitetura impressionante e cultura diversa.
+Um dos marcos mais conhecidos é a Ponte Golden Gate, uma maravilha arquitetônica que atravessa o estreito de Golden Gate, oferecendo vistas deslumbrantes da baía.
+A paisagem montanhosa da cidade proporciona panoramas incríveis, especialmente em locais como Twin Peaks.
+Outro destino imperdível é a Ilha de Alcatraz, lar da famosa prisão que já foi um centro de detenção.
+Os visitantes podem pegar um ferry e fazer um tour pela ilha, conhecendo sua fascinante história.
+O Fisherman’s Wharf, uma área movimentada à beira-mar, é famosa por seus frutos do mar, navios históricos e os leões-marinhos que descansam nos cais.
+Os bairros coloridos, como Chinatown e o Mission District, oferecem experiências culturais únicas, desde a culinária autêntica até a arte de rua vibrante.
+Não deixe de andar pelos famosos bondes, que sobem as colinas íngremes da cidade e oferecem uma maneira divertida de explorar as ruas cênicas de São Francisco.
+Com sua combinação de beleza natural, história rica e charme moderno, São Francisco oferece algo para todos os tipos de viajantes.`
+  },
+  {
+    image: require('./assets/quebec.png'),
+    preview: 'Quebec é uma cidade encantadora e histórica localizada na província de Quebec...',
+    full: `Quebec é uma cidade encantadora e histórica localizada na província de Quebec, no Canadá. Conhecida por sua rica herança francesa, Quebec é uma das cidades mais antigas da América do Norte e oferece uma combinação única de charme europeu e cultura canadense.
+A parte mais famosa da cidade é o Vieux-Québec (Velho Quebec), um bairro histórico que foi declarado Patrimônio Mundial da Humanidade pela UNESCO. Suas ruas de paralelepípedos, edifícios coloniais e muralhas imponentes transportam os visitantes para o passado, criando uma atmosfera mágica. No topo da colina, encontra-se o Château Frontenac, um icônico hotel que é um dos edifícios mais fotografados do mundo.
+Quebec também é famosa pela sua vibrante cena cultural, com museus, galerias de arte e teatros. O Carnaval de Quebec, realizado anualmente no inverno, é um dos maiores e mais famosos do mundo, oferecendo desfiles, festas e diversas atividades ao ar livre, como corrida de trenó e esculturas de gelo.
+Além de sua história e cultura, a cidade também é conhecida por sua culinária, com pratos tradicionais como poutine, torta de carne e maple syrup (xarope de bordo), que são destaque em muitos restaurantes locais.
+Com suas paisagens encantadoras, arquitetura histórica e cultura vibrante, Quebec é um destino imperdível para quem deseja explorar a riqueza do Canadá francófono.`
+  },
+  {
+    image: require('./assets/victoria.png'),
+    preview: 'Victoria é um estado localizado no sudeste da Austrália, conhecido por sua diversidade...',
+    full: `Victoria é um estado localizado no sudeste da Austrália, conhecido por sua diversidade de paisagens, desde praias deslumbrantes até montanhas e florestas exuberantes. A capital de Victoria é Melbourne, uma das cidades mais cosmopolitas e culturais do país, famosa por sua cena artística, restaurantes de classe mundial, lojas independentes e eventos esportivos de destaque, como o Australian Open de tênis.
+Fora da cidade, o estado de Victoria oferece uma infinidade de atrações naturais e culturais. O Great Ocean Road, uma das rotas costeiras mais espetaculares do mundo, serpenteia ao longo do litoral e oferece vistas incríveis do oceano, além de atrações como os Doze Apóstolos, formações rochosas impressionantes que emergem do mar.
+A região de Yarra Valley é famosa por suas vinícolas e paisagens montanhosas, oferecendo aos visitantes a chance de degustar alguns dos melhores vinhos da Austrália. Para quem aprecia atividades ao ar livre, o Parque Nacional Grampians é um local popular para caminhadas e aventuras na natureza, com belas paisagens e vida selvagem local.
+Victoria também é conhecida por suas cidades menores e encantadoras, como Ballarat e Bendigo, que oferecem uma imersão na história da corrida do ouro da Austrália, além de museus e arquitetura vitoriana.
+Seja explorando Melbourne ou desfrutando das belezas naturais do estado, Victoria oferece uma experiência diversificada e inesquecível para os visitantes.`
+  },
+  {
+    image: require('./assets/paris.png'),
+    preview: 'Paris é a capital da França, conhecida mundialmente como a "Cidade Luz"...',
+    full: `Paris é a capital da França, conhecida mundialmente como a "Cidade Luz". A Torre Eiffel, um dos monumentos mais icônicos do mundo, oferece vistas panorâmicas da cidade e é um símbolo do romantismo e da elegância parisiense.
+O Museu do Louvre, lar da Mona Lisa e de muitas outras obras-primas, é um paraíso para os amantes da arte.
+A Catedral de Notre-Dame, com sua arquitetura gótica impressionante, e o Arco do Triunfo, que marca a história militar da França, são pontos turísticos essenciais.
+A Champs-Élysées é uma das avenidas mais famosas do mundo, oferecendo lojas de luxo e cafés ao longo de sua extensão.
+O bairro de Montmartre, com suas ruas charmosas e o icônico Sacré-Cœur, oferece uma experiência boêmia, enquanto o Rio Sena adiciona um toque mágico à cidade.
+Paris é também um centro gastronômico, com suas boulangeries e restaurantes sofisticados. Não importa o que você procure, Paris sempre tem algo especial a oferecer.`
+  },
+  {
+    image: require('./assets/toquio.png'),
+    preview: 'Tóquio é uma cidade dinâmica e futurista que combina tradição e inovação...',
+    full: `Tóquio é uma cidade dinâmica e futurista que combina tradição e inovação de maneira única. O Templo Senso-ji, em Asakusa, é um dos maiores e mais antigos templos budistas do Japão, oferecendo um vislumbre da cultura tradicional japonesa.
+O Palácio Imperial, localizado no coração da cidade, é rodeado por belos jardins e reflete a história e a importância da monarquia no Japão.
+Tóquio é também famosa por seus bairros vibrantes, como Shibuya, onde você pode testemunhar o famoso cruzamento de pedestres, e Shinjuku, repleto de lojas, restaurantes e vida noturna agitada.
+Akihabara é o paraíso para os fãs de eletrônicos e cultura pop, enquanto o Parque Ueno oferece museus e tranquilidade em meio ao ritmo acelerado da cidade.
+A culinária de Tóquio é mundialmente renomada, com sushi fresco e ramen delicioso disponíveis em toda a cidade. Tóquio é um lugar onde o antigo e o novo coexistem de forma fascinante.`
+  },
+  {
+    image: require('./assets/rio_de_janeiro.png'),
+    preview: 'O Rio de Janeiro é uma das cidades mais vibrantes e icônicas do Brasil...',
+    full: `O Rio de Janeiro é uma das cidades mais vibrantes e icônicas do Brasil, famosa por suas praias deslumbrantes, como Copacabana e Ipanema. O Cristo Redentor, uma das Novas Sete Maravilhas do Mundo, oferece uma vista panorâmica incrível da cidade e é um símbolo do Rio.
+O Pão de Açúcar, com seu bondinho e vistas espetaculares, é outro ponto turístico imperdível, oferecendo uma das vistas mais bonitas do mundo.
+A cidade também é conhecida pelo Carnaval, uma celebração de música, dança e cores, atraindo milhares de turistas de todo o mundo.
+Os bairros como Santa Teresa e Lapa são famosos por sua vida boêmia e cultura artística, com bares, restaurantes e música ao vivo.
+O Rio é uma cidade de contrastes, onde a natureza exuberante e a vida urbana se encontram de maneira única, criando uma experiência inesquecível para os visitantes.`
+  }
+];
 
 export default function App() {
-  // Estado para Inputs de Texto
-  const [objetivo, setObjetivo] = useState('');
-  const [idade, setIdade] = useState('');
-  const [days, setDays] = useState('');
-  const [preferencia, setPreferencia] = useState('');
-
-  // Estado para Pickers
-  const [chosenDestination, setChosenDestination] = useState('');
-  const [chosenYear, setChosenYear] = useState('');
-
-  // Função para cancelar ou apagar tudo
-  const cancelTrip = () => {
-    setChosenDestination('');
-    setChosenYear('');
-    setBudgetLevel(0)
-    setDays('')
-    setIdade('')
-    setPreferencia('')
-    setObjetivo('')
-  };
-
-
-  // Estado para Sliders
-  const [interestLevel, setInterestLevel] = useState(0);
-  const [budgetLevel, setBudgetLevel] = useState(0); // Valor em reais
-
-  // Estado para Switches
-  const [hasTravelInsurance, setHasTravelInsurance] = useState(false);
-  const [isFlightBooked, setIsFlightBooked] = useState(false);
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Título */}
-      <Text style={styles.title}>Lugares para Viajar</Text>
-
-      {/* 4 Inputs de Texto */}
-      <TextInput
-        style={styles.input}
-        placeholder="Objetivo da viagem"
-        value={objetivo}
-        onChangeText={setObjetivo}
-      />
-      <TextInput
-        keyboardType='numeric'
-        style={styles.input}
-        placeholder="Idade"
-        value={idade}
-        onChangeText={setIdade}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Quantos dias?"
-        value={days}
-        onChangeText={setDays}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Preferencias"
-        value={preferencia}
-        onChangeText={setPreferencia}
-      />
-
-      {/* 2 Pickers */}
-      <Text style={styles.label}>Destino escolhido:</Text>
-      <Picker
-        selectedValue={chosenDestination}
-        style={styles.picker}
-        onValueChange={(itemValue) => setChosenDestination(itemValue)}
-      >
-        <Picker.Item label="Paris" value="Paris" />
-        <Picker.Item label="Nova York" value="New York" />
-        <Picker.Item label="Tóquio" value="Tokyo" />
-        <Picker.Item label="Sydney" value="Sydney" />
-      </Picker>
-
-      <Text style={styles.label}>Ano que pretende ir:</Text>
-      <Picker
-        selectedValue={chosenYear}
-        style={styles.picker}
-        onValueChange={(itemValue) => setChosenYear(itemValue)}
-      >
-        <Picker.Item label="2025" value="2025" />
-        <Picker.Item label="2026" value="2026" />
-        <Picker.Item label="2027" value="2027" />
-        <Picker.Item label="2028" value="2028" />
-      </Picker>
-
-      {/* 2 Sliders */}
-      <Text style={styles.label}>Seu nível de interesse (0-10): {interestLevel}</Text>
-      <Slider
-        style={styles.slider}
-        minimumValue={0}
-        maximumValue={10}
-        step={1}
-        value={interestLevel}
-        onValueChange={setInterestLevel}
-      />
-
-      <Text style={styles.label}>Orçamento estimado: R$ {budgetLevel.toFixed(2)}</Text>
-      <Slider
-        style={styles.slider}
-        minimumValue={1000}
-        maximumValue={10000}
-        step={100}
-        value={budgetLevel}
-        onValueChange={setBudgetLevel}
-      />
-
-      {/* 2 Switches */}
-      <Text style={styles.label}>Você possui seguro de viagem?</Text>
-      <Switch
-        value={hasTravelInsurance}
-        onValueChange={setHasTravelInsurance}
-      />
-
-      <Text style={styles.label}>Voo já foi reservado?</Text>
-      <Switch
-        value={isFlightBooked}
-        onValueChange={setIsFlightBooked}
-      />
-
-      {/* 2 Botões com interação */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => alert(`Destino escolhido: ${chosenDestination} no ano de ${chosenYear}`)}
-      >
-        <Text>Salvar Destino</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button} onPress={() => { cancelTrip(); alert('Viagem cancelada!') }}
-      >
-        <Text>Cancelar Viagem</Text>
-      </TouchableOpacity>
-
-      {/* 5 Imagens com título e descrição */}
-      <View style={styles.imageContainer}>
-        <View style={styles.imageBox}>
-          <Image source={require('./assets/paris.png')} style={styles.image} />
-          <Text style={styles.imageTitle}>Paris</Text>
-          <Text style={styles.imageDescription}>A cidade luz, famosa por sua arquitetura e cultura.</Text>
-        </View>
-
-        <View style={styles.imageBox}>
-          <Image source={require('./assets/quebec.png')} style={styles.image} />
-          <Text style={styles.imageTitle}>Quebec</Text>
-          <Text style={styles.imageDescription}>Uma cidade histórica com influências francesas.</Text>
-        </View>
-
-        <View style={styles.imageBox}>
-          <Image source={require('./assets/rio_de_janeiro.png')} style={styles.image} />
-          <Text style={styles.imageTitle}>Rio de Janeiro</Text>
-          <Text style={styles.imageDescription}>Famosa pelas praias e o Cristo Redentor.</Text>
-        </View>
-
-        <View style={styles.imageBox}>
-          <Image source={require('./assets/san_francisco.png')} style={styles.image} />
-          <Text style={styles.imageTitle}>San Francisco</Text>
-          <Text style={styles.imageDescription}>Lar da icônica ponte Golden Gate e da cultura tech.</Text>
-        </View>
-
-        <View style={styles.imageBox}>
-          <Image source={require('./assets/toquio.png')} style={styles.image} />
-          <Text style={styles.imageTitle}>Tóquio</Text>
-          <Text style={styles.imageDescription}>Uma mistura de tradição e modernidade no Japão.</Text>
-        </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>LUGARES PARA VIAJAR EM 2026</Text>
+        {placesData.map((place, index) => (
+          <PlaceCard key={index} image={place.image} preview={place.preview} full={place.full} />
+        ))}
       </View>
     </ScrollView>
+  );
+}
+
+function PlaceCard({ image, preview, full }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <View style={styles.car}>
+      <Image style={styles.places} source={image} />
+      <Text style={styles.textDescription}>{expanded ? full : preview}</Text>
+      <Pressable onPress={() => setExpanded(!expanded)}>
+        <Text style={styles.button}>{expanded ? 'Mostrar menos' : 'Leia mais'}</Text>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'flex-start',
+    backgroundColor: 'black',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff', // Fundo suave
+    justifyContent: 'space-evenly',
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#4b0082', // Cor roxa para o título
+    textShadowColor: "red",
+    textShadowOffset: { width: 0, height: 50 },
+    textShadowRadius: 50,
+    color: "white",
+    fontSize: 50,
+    fontStyle: "italic"
   },
-  input: {
-    width: '80%',
-    padding: 12,
-    borderWidth: 1,
-    marginBottom: 10,
-    borderRadius: 8,
-    backgroundColor: '#ffffff', // Fundo branco nos inputs
-    borderColor: '#7b68ee', // Cor roxa nos bordas
+  car: {
+    maxWidth: "90%",
+    margin: "5%",
+    shadowColor: 'red',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#4b0082', // Cor roxa nas labels
+  textDescription: {
+    flexWrap: "wrap",
+    width: '100%',
+    textAlign: "left",
+    padding: "0.5%",
+    color: "white",
+    fontStyle: 'italic'
   },
-  picker: {
-    height: 50,
-    width: '80%',
-    marginBottom: 20,
-    backgroundColor: '#ffffff', // Fundo branco no Picker
-    borderRadius: 8,
-    borderColor: '#7b68ee', // Cor roxa nas bordas
+  places: {
+    width: "100%",
+    height: 200,
+    resizeMode: 'cover'
   },
-  slider: {
-    width: '80%',
-    marginBottom: 20,
-  },
-
   button: {
-    margin: 20,
-    backgroundColor: 'teal',
-    borderWidth: 2,
-    borderRadius: 10,
-    padding: 10
-  },
-
-  imageContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  imageBox: {
-    width: '45%',
-    marginBottom: 20,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-  },
-  image: {
-    width: 130, // Tamanho maior das imagens
-    height: 130,
-    marginBottom: 10,
-    borderRadius: 10,
-  },
-  imageTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#4b0082',
-  },
-  imageDescription: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#696969', // Cor mais suave para a descrição
-  },
+    color: 'red',
+    fontStyle: 'italic',
+    paddingTop: 5
+  }
 });
